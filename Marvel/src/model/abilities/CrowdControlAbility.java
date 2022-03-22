@@ -1,6 +1,8 @@
 // Error due to the missing Effect Class in my Package 
 package model.abilities;
 
+import model.effects.Effect;
+
 public class CrowdControlAbility extends Ability{
  private Effect effect;
  
