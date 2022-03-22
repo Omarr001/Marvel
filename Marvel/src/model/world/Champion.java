@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import model.abilities.Ability;
+import model.effects.Effect;
 
 public class Champion {
 	private String name;
@@ -16,7 +17,7 @@ public class Champion {
 	private int attackDamage;
 	private int speed;
 	private ArrayList<Ability> abilities;
-	//private ArrayList<Effect> appliedEffects; // remove comment when class is done
+	private ArrayList<Effect> appliedEffects; // remove comment when class is done
 	private Condition condition;
 	private Point location;
 	
@@ -104,6 +105,10 @@ public class Champion {
 
 	public ArrayList<Ability> getAbilities() {
 		return abilities;
+	}
+
+	public ArrayList<Effect> getAppliedEffects() {
+		return appliedEffects;
 	}
 	
 	

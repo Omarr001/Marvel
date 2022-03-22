@@ -12,6 +12,22 @@ public class Player {
 	public Player(String name) {
 		this.name = name;
 	}
+
+	public Champion getLeader() {
+		return leader;
+	}
+
+	public void setLeader(Champion leader) {
+		this.leader = leader;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public ArrayList<Champion> getTeam() {
+		return team;
+	}
 	
 	
 }

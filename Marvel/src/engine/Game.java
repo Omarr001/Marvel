@@ -74,6 +74,47 @@ public class Game {
 			}
 		}
 	}
+
+	public Player getFirstPlayer() {
+		return firstPlayer;
+	}
+
+	public Player getSecondPlayer() {
+		return secondPlayer;
+	}
+
+	public boolean isFirstLeaderAbilityUsed() {
+		return firstLeaderAbilityUsed;
+	}
+
+	public boolean isSecondLeaderAbilityUsed() {
+		return secondLeaderAbilityUsed;
+	}
+
+	public Object[][] getBoard() {
+		return board;
+	}
+
+	public static ArrayList<Champion> getAvailableChampions() {
+		return availableChampions;
+	}
+
+	public static ArrayList<Ability> getAvailableAbilities() {
+		return availableAbilities;
+	}
+
+	public PriorityQueue getTurnOrder() {
+		return turnOrder;
+	}
+
+	public static int getBoardheight() {
+		return BOARDHEIGHT;
+	}
+
+	public static int getBoardwidth() {
+		return BOARDWIDTH;
+	}
+	
 	// in the load methods we may need to assign the filePath the name of csv files
 	
 	
