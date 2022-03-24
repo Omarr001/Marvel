@@ -20,7 +20,7 @@ int required){
 	this.castRange=castRange;
 	castArea= area;
 	requiredActionPoints=required;	
-}
+} //(Omar) we might have to initialise currentCooldown to 0 in the constructor
 //Getters
 
 public String getName() {
@@ -49,6 +49,10 @@ public int getRequiredActionPoints() {
 
 public AreaOfEffect getCastArea() {
 	return castArea;
+}
+// this was not implemented
+public void setCurrentCooldown(int currentCooldown) {
+	this.currentCooldown = currentCooldown;
 }
 
 }

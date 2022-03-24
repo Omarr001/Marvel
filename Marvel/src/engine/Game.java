@@ -32,6 +32,15 @@ public class Game {
 	}
 	
 	private void placeChampions() {
+		
+		for(int i = 1; i < 4; i++) 
+			board[0][i] = turnOrder.remove();
+		
+		for(int i = 1; i < 4; i++)
+			board[4][i] = turnOrder.remove();
+		
+		// this is assuming player1 champions are placed first in the queue
+		
 		// will loop over the board array board[0][1 --> 3] and board[4][1 --> 3] to add champions
 		// kept empty till we figure out from which data structure do we draw the champions from
 	}
@@ -39,10 +48,20 @@ public class Game {
 	private void placeCovers() {
 		
 		Random ran = new Random();
-		for(int i = 0; i < 5; i++) {
+		/*for(int i = 0; i < 5; i++) {
 			int x = ran.nextInt(5);
 			int y = ran.nextInt(3) + 1;
 			board[y][x] = new Cover(0,0); // kept 0 for now till we figure out the dimensions of the board on the screen
+		}*/
+		
+		int i = 0;
+		while(i < 5) {
+			int x = ran.nextInt(5);
+			int y = ran.nextInt(3) + 1;
+			if(board[x][y] == null) {
+				board[x][y] = new Cover(0,0);
+				i++;
+			}
 		}
 	}
 	
