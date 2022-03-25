@@ -31,7 +31,9 @@ public class Champion {
 		this.speed = speed;
 		this.attackRange = attackRange;
 		this.attackDamage = attackDamage;
+		this.condition = Condition.ACTIVE;
 		this.appliedEffects = new ArrayList<Effect>();
+		this.abilities = new ArrayList<Ability>();
 		// not clear yet how to initialize ArrayLists (whether empty or not)
 	}
 
@@ -42,6 +44,12 @@ public class Champion {
 	}
 
 	public void setCurrentHP(int currentHP) {
+		if(currentHP > maxHP)
+			return;
+		if(currentHP < 0) {
+			this.currentHP = 0;
+			return;
+		}
 		this.currentHP = currentHP;
 	}
 
@@ -111,6 +119,14 @@ public class Champion {
 
 	public ArrayList<Effect> getAppliedEffects() {
 		return appliedEffects;
+	}
+
+	public void setMana(int mana) {
+		this.mana = mana;
+	}
+
+	public void setCurrentActionPoints(int currentActionPoints) {
+		this.currentActionPoints = currentActionPoints;
 	}
 	
 	
