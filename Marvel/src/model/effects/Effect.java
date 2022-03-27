@@ -20,7 +20,7 @@ public class Effect {
 	public void setDuration(int duration1){
 		this.duration=duration1;
 	}
-	public EffectType getEffectType(){
+	public EffectType getType(){
 		return this.type;
 	}
 

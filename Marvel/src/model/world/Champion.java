@@ -7,26 +7,39 @@ import model.abilities.Ability;
 import model.effects.Effect;
 
 public class Champion {
-	private String name; // read only
-	private int maxHP; // read only
+	private String name; 
+	// read only
+	private int maxHP; 
+	// read only
 	private int currentHP;
-	private int mana; // read only (this will be the amount of mana throught the "entire" game
-	private int maxActionPointsPerTurn; // max point for actions "each" turn
-	private int currentActionPoints; // read only remaining points in current turn
-	private int attackRange; // read only
-	private int attackDamage; // how much does the attack damage the others
-	private int speed; // might be the amount of time the champion wait to get his turn (the lower the better)
-	private ArrayList<Ability> abilities; // read only
-	private ArrayList<Effect> appliedEffects; // contains all current effetcs "applied on" the champion (makes sense to be empty in the beggining)
-	private Condition condition; // starts with ACTIVE
+	private int mana; 
+	// read only (this will be the amount of mana throught the "entire" game
+	private int maxActionPointsPerTurn; 
+	// max point for actions "each" turn
+	private int currentActionPoints;
+	// read only remaining points in current turn
+	private int attackRange;
+	// read only
+	private int attackDamage;
+	// how much does the attack damage the others
+	private int speed; 
+	// might be the amount of time the champion wait to get his turn (the lower the better)
+	private ArrayList<Ability> abilities;
+	// read only
+	private ArrayList<Effect> appliedEffects;
+	// contains all current effetcs "applied on" the champion (makes sense to be empty in the beggining)
+	private Condition condition; 
+	// starts with ACTIVE
 	private Point location;
 	
 	public Champion(String name , int maxHP , int mana , int maxActions , int speed , int attackRange , int attackDamage) {
 		this.name = name;
 		this.maxHP = maxHP;
-		this.currentHP = maxHP; // logically a champion should start with maxHP, it wasn't stated in file(should ask TA)
+		this.currentHP = maxHP;
+		// logically a champion should start with maxHP, it wasn't stated in file(should ask TA)
 		this.maxActionPointsPerTurn = maxActions;
-		this.currentActionPoints = maxActions; // makes sense that a champion will start by the max Action points
+		this.currentActionPoints = maxActions;
+		// makes sense that a champion will start by the max Action points
 		this.mana = mana;
 		this.speed = speed;
 		this.attackRange = attackRange;
@@ -44,8 +57,11 @@ public class Champion {
 	}
 
 	public void setCurrentHP(int currentHP) {
-		if(currentHP > maxHP)
+		if(currentHP > maxHP) {
+			currentHP = maxHP; 
+			// not sure if correct imp. but makes sense when you receive HP more than max HP will be max
 			return;
+		}
 		if(currentHP < 0) {
 			this.currentHP = 0;
 			return;
