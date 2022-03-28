@@ -95,10 +95,19 @@ public class Game {
 		}
 	}
 	
+	public static Ability x(String ability) {
+		Ability res = null;
+		for(int i = 0; i < availableAbilities.size(); i++) {
+			if(ability.equals(availableAbilities.get(i).getName()))
+				res = availableAbilities.get(i);
+		}
+		return res;
+	}
+	
 	public static void loadChampions(String filePath) throws Exception{ 
 		// might need to call other load first to be able to add abilities to champions
 			
-		int i = 0;
+		//int i = 0;
 		String line = "";
 		BufferedReader br = new BufferedReader(new FileReader(filePath));
 		
@@ -112,10 +121,15 @@ public class Game {
 						Integer.parseInt(ch[4]), Integer.parseInt(ch[5]), Integer.parseInt(ch[6]), 
 						Integer.parseInt(ch[7]));
 				
-				for(int j = 0; j < 3; j++) {
-					h.getAbilities().add(availableAbilities.get(i));
-					i++;
+				for(int i = 0; i < 3; i++) {
+					Ability a = x(ch[8 + i]);
+					h.getAbilities().add(a);
 				}
+				
+//				for(int j = 0; j < availableAbilities.size() && h.getAbilities().size() != 3; j++) {
+//					h.getAbilities().add(availableAbilities.get(i++));
+//					//i++;
+//				}
 				availableChampions.add(h);
 				
 				break;
@@ -125,10 +139,15 @@ public class Game {
 						Integer.parseInt(ch[4]), Integer.parseInt(ch[5]), Integer.parseInt(ch[6]), 
 						Integer.parseInt(ch[7]));
 				
-				for(int j = 0; j < 3; j++) {
-					v.getAbilities().add(availableAbilities.get(i));
-					i++;
+				for(int i = 0; i < 3; i++) {
+					Ability a = x(ch[8 + i]);
+					v.getAbilities().add(a);
 				}
+				
+//				for(int j = 0; j < availableAbilities.size() && v.getAbilities().size() != 3; j++) {
+//				v.getAbilities().add(availableAbilities.get(i++));
+//					//i++;
+//				}
 				availableChampions.add(v);
 				
 				break;
@@ -138,16 +157,22 @@ public class Game {
 						Integer.parseInt(ch[4]), Integer.parseInt(ch[5]), Integer.parseInt(ch[6]), 
 						Integer.parseInt(ch[7]));
 				
-				for(int j = 0; j < 3; j++) {
-					a.getAbilities().add(availableAbilities.get(i));
-					i++;
+				for(int i = 0; i < 3; i++) {
+					Ability ab = x(ch[8 + i]);
+					a.getAbilities().add(ab);
 				}
+				
+//				for(int j = 0; j < availableAbilities.size() && a.getAbilities().size() != 3; j++) {
+//					a.getAbilities().add(availableAbilities.get(i++));
+//					//i++;
+//				}
 				availableChampions.add(a);
 				
 				break;
 			}
 		}	
 		br.close();
+		availableChampions.trimToSize();
 	}
 	
 	public static void loadAbilities(String filePath) throws Exception{
@@ -242,6 +267,7 @@ public class Game {
 			
 		}
 		br.close();
+		availableAbilities.trimToSize();
 	}
 
 	public Player getFirstPlayer() {
@@ -291,7 +317,24 @@ public class Game {
 	
 	
 	
-	
+	public static void main(String[] args) throws Exception {
+		Player p1 = new Player("O");
+		Player p2 = new Player("F");
+		Game g = new Game(p1 , p2);
+		
+		loadAbilities("Abilities.csv");
+		loadChampions("Champions.csv");
+		//System.out.println(getAvailableAbilities().get(44).getName());
+		//System.out.println(getAvailableChampions().get(14).getAbilities().get(2).getName());
+		
+		for(int i = 0; i < getAvailableChampions().size(); i++) {
+			System.out.print(getAvailableChampions().get(i).getName());
+			for(int j = 0; j <  getAvailableChampions().get(i).getAbilities().size(); j++) {
+				System.out.print(", " + getAvailableChampions().get(i).getAbilities().get(j).getName());
+			}
+			System.out.println();
+		}
+	}
 	
 	
 	
