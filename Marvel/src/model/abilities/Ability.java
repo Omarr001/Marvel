@@ -20,6 +20,7 @@ int required){
 	this.castRange=castRange;
 	castArea= area;
 	requiredActionPoints=required;	
+	this.currentCooldown = 0;
 } //(Omar) we might have to initialise currentCooldown to 0 in the constructor
 //Getters
 
@@ -52,6 +53,11 @@ public AreaOfEffect getCastArea() {
 }
 // this was not implemented
 public void setCurrentCooldown(int currentCooldown) {
+	if(currentCooldown > baseCooldown) {
+		this.currentCooldown = baseCooldown;
+		return;
+	}
+	// added a condition to set basecooldown (Omar)(31/3)
 	this.currentCooldown = currentCooldown;
 }
 

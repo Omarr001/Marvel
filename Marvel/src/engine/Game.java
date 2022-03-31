@@ -69,7 +69,7 @@ public class Game {
 		}
 		
 		for(int i = 0; i < p2.size(); i++) {
-			Point p = new Point(5 , i + 1);
+			Point p = new Point(4 , i + 1); // this was 5 instead of 5 (Omar) (31/3)
 			board[4][i + 1] = p2.get(i);
 			p2.get(i).setLocation(p);
 		}
@@ -89,17 +89,19 @@ public class Game {
 			int x = ran.nextInt(5);
 			int y = ran.nextInt(3) + 1;
 			if(board[y][x] == null) {
-				board[y][x] = new Cover(x,y);
+				board[y][x] = new Cover(y,x);// y x
 				i++;
 			}
 		}
 	}
 	
-	public static Ability x(String ability) {
+	public static Ability loadHelper(String ability) {
 		Ability res = null;
 		for(int i = 0; i < availableAbilities.size(); i++) {
-			if(ability.equals(availableAbilities.get(i).getName()))
+			if(ability.equals(availableAbilities.get(i).getName())) {
 				res = availableAbilities.get(i);
+				return res;
+			}
 		}
 		return res;
 	}
@@ -122,7 +124,7 @@ public class Game {
 						Integer.parseInt(ch[7]));
 				
 				for(int i = 0; i < 3; i++) {
-					Ability a = x(ch[8 + i]);
+					Ability a = loadHelper(ch[8 + i]);
 					h.getAbilities().add(a);
 				}
 				
@@ -140,7 +142,7 @@ public class Game {
 						Integer.parseInt(ch[7]));
 				
 				for(int i = 0; i < 3; i++) {
-					Ability a = x(ch[8 + i]);
+					Ability a = loadHelper(ch[8 + i]);
 					v.getAbilities().add(a);
 				}
 				
@@ -158,7 +160,7 @@ public class Game {
 						Integer.parseInt(ch[7]));
 				
 				for(int i = 0; i < 3; i++) {
-					Ability ab = x(ch[8 + i]);
+					Ability ab = loadHelper(ch[8 + i]);
 					a.getAbilities().add(ab);
 				}
 				
@@ -314,42 +316,6 @@ public class Game {
 	
 	
 	// still need to add heros and abilities into their arraylists
-	
-	
-	
-	public static void main(String[] args) throws Exception {
-		Player p1 = new Player("O");
-		Player p2 = new Player("F");
-		Game g = new Game(p1 , p2);
-		
-		loadAbilities("Abilities.csv");
-		loadChampions("Champions.csv");
-		//System.out.println(getAvailableAbilities().get(44).getName());
-		//System.out.println(getAvailableChampions().get(14).getAbilities().get(2).getName());
-		
-		for(int i = 0; i < getAvailableChampions().size(); i++) {
-			System.out.print(getAvailableChampions().get(i).getName());
-			for(int j = 0; j <  getAvailableChampions().get(i).getAbilities().size(); j++) {
-				System.out.print(", " + getAvailableChampions().get(i).getAbilities().get(j).getName());
-			}
-			System.out.println();
-		}
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 }

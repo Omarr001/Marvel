@@ -13,11 +13,11 @@ public class Champion {
 	// read only
 	private int currentHP;
 	private int mana; 
-	// read only (this will be the amount of mana throught the "entire" game
+	// this will be the amount of mana throught the "entire" game
 	private int maxActionPointsPerTurn; 
 	// max point for actions "each" turn
 	private int currentActionPoints;
-	// read only remaining points in current turn
+	// remaining points in current turn
 	private int attackRange;
 	// read only
 	private int attackDamage;
@@ -28,6 +28,7 @@ public class Champion {
 	// read only
 	private ArrayList<Effect> appliedEffects;
 	// contains all current effetcs "applied on" the champion (makes sense to be empty in the beggining)
+	// read only
 	private Condition condition; 
 	// starts with ACTIVE
 	private Point location;
@@ -47,6 +48,7 @@ public class Champion {
 		this.condition = Condition.ACTIVE;
 		this.appliedEffects = new ArrayList<Effect>();
 		this.abilities = new ArrayList<Ability>();
+		this.location = null;
 		// not clear yet how to initialize ArrayLists (whether empty or not)
 	}
 
@@ -137,11 +139,21 @@ public class Champion {
 		return appliedEffects;
 	}
 
-	public void setMana(int mana) {
+	public void setMana(int mana) { 
+		if(mana < 0) {
+			this.mana = 0;
+			return;
+		}
+	//	added condition (Omar) (31/3)
 		this.mana = mana;
 	}
 
 	public void setCurrentActionPoints(int currentActionPoints) {
+		if(currentActionPoints < 0) {
+			this.currentActionPoints = 0;
+			return;
+		}
+//		added condition (Omar) (31/3)
 		this.currentActionPoints = currentActionPoints;
 	}
 	

@@ -7,7 +7,7 @@ public class Player {
 	
 	private String name;
 	private Champion leader;
-	ArrayList<Champion> team;
+	private ArrayList<Champion> team;
 	
 	public Player(String name) {
 		this.name = name;

@@ -15,6 +15,11 @@ public int getDamageAmount() {
 }
 
 public void setDamageAmount(int damageAmount) {
+	if(damageAmount < 0) {
+		this.damageAmount = 0;
+		return;
+	}
+	// added this condition (Omar) (31/3)
 	this.damageAmount = damageAmount;
 }
  

@@ -16,6 +16,11 @@ public int getHealAmount() {
 }
 
 public void setHealAmount(int healAmount) {
+	if(healAmount < 0) {
+		this.healAmount = 0;
+		return;
+	}
+	// added this condition (Omar) (31/3)
 	this.healAmount = healAmount;
 }
 

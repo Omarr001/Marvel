@@ -28,8 +28,11 @@ public Point getLocation() {
 
 
 public void setCurrentHP(int currentHP) {
-	if(currentHP < 0)
-		return; // it shouldn't be less than 0
+	if(currentHP < 0) {
+		this.currentHP = 0;
+		return;
+	}
+	// it shouldn't be less than 0
 	this.currentHP = currentHP;
 }
 
