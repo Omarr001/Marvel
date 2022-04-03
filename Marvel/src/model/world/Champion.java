@@ -149,6 +149,11 @@ public class Champion {
 	}
 
 	public void setCurrentActionPoints(int currentActionPoints) {
+		if(currentActionPoints > maxActionPointsPerTurn) {
+			this.currentActionPoints = maxActionPointsPerTurn;
+			return;
+		}
+		
 		if(currentActionPoints < 0) {
 			this.currentActionPoints = 0;
 			return;
