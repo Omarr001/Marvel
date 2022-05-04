@@ -1,8 +1,8 @@
 package model.effects;
 
 import model.world.Champion;
-
-public class Effect implements Cloneable{
+//this class is an abstract class now (Fayrouz 4/5)
+public abstract class Effect implements Cloneable{
 	private String name;
 	private EffectType type;
 	private int duration;
@@ -28,13 +28,9 @@ public class Effect implements Cloneable{
 		return type;
 	}
 	
-	public void apply(Champion c) {
-		
-	}
+	public abstract void apply(Champion c);
 	
-	public void remove(Champion c) {
-		
-	}
+	public abstract void remove(Champion c);
 	
 
 }

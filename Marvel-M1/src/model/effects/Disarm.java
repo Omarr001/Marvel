@@ -1,7 +1,7 @@
 package model.effects;
 
 import model.world.Champion;
-
+// added abstract mehtods not clear on implementation yet (Fayrouz 4/5)
 public class Disarm extends Effect {
 	
 
@@ -11,6 +11,12 @@ public class Disarm extends Effect {
 	}
 	
 	public void apply(Champion c) {
+		
+	}
+
+	@Override
+	public void remove(Champion c) {
+		// TODO Auto-generated method stub
 		
 	}
 	
