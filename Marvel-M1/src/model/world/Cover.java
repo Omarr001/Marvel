@@ -1,7 +1,7 @@
 package model.world;
 
 import java.awt.Point;
-//made the class implement Damag. (Omar 3/4)
+//made the class implement Damag. (Omar 3/5)
 public class Cover implements Damageable{
 	private int currentHP;
 

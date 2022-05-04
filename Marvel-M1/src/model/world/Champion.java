@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 import model.abilities.Ability;
 import model.effects.Effect;
-// made the class implement Damag. (Omar 3/4)
+// made the class implement Damag. (Omar 3/5)
 public class Champion implements Damageable{
 	private String name;
 	private int maxHP;

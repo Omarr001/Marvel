@@ -1,5 +1,5 @@
 package exceptions;
-//(Omar 3/4)
+//(Omar 3/5)
 public class ChampionDisarmedException extends GameActionException{
 
 	public ChampionDisarmedException() {
