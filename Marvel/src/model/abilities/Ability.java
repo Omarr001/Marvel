@@ -57,6 +57,11 @@ public void setCurrentCooldown(int currentCooldown) {
 		this.currentCooldown = baseCooldown;
 		return;
 	}
+	if(currentCooldown < 0) {
+		this.currentCooldown = 0;
+		return;
+		// added condition (Omar) (31/3)
+	}
 	// added a condition to set basecooldown (Omar)(31/3)
 	this.currentCooldown = currentCooldown;
 }
