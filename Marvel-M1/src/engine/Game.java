@@ -189,25 +189,23 @@ public class Game {
 		}
 
 	}
-	//(Omar 4/5) waiting for implementation of combarable to avoid errors in insert method
+	//(Omar 4/5)
 	public void prepareChampionTurns() {
 		for(int i = 0; i < firstPlayer.getTeam().size(); i++) {
 			if(!(firstPlayer.getTeam().get(i).getCondition().equals(Condition.KNOCKEDOUT))) {
-			// turnOrder.insert(firstPlayer.getTeam().get(i));
+				turnOrder.insert(firstPlayer.getTeam().get(i));
 			}
 		}
 		for(int i = 0; i < secondPlayer.getTeam().size(); i++) {
 			if(!(secondPlayer.getTeam().get(i).getCondition().equals(Condition.KNOCKEDOUT))) {
-			// turnOrder.insert(secondPlayer.getTeam().get(i));
+				turnOrder.insert(secondPlayer.getTeam().get(i));
 			}
 		}
 		
 	}
 	// (Omar 4/5) this will return the champion in the front of the queue
-	// waiting for comparable implementation
 	public Champion getCurrentChampion() {
-		//return turnOrder.peekMin();
-		return null;
+		return (Champion) turnOrder.peekMin();
 	}
 	// (Omar 4/5) this is assuming that when a champion is knocked out it will be removed from the player's team
 	public Player checkGameOver() {
@@ -217,32 +215,55 @@ public class Game {
 			return firstPlayer;
 		return null;
 	}
-	//(Omar 4/5) still need to validate if the point we want to move to is empty or not
+	//(Omar 4/5)
 	public void move(Direction d) {
 		Champion c = (Champion) turnOrder.peekMin();
 		if(c.getCurrentActionPoints() < 1)
 			return; // might have to throw some exception here not sure yet
 		Point tmp = new Point(c.getLocation().x , c.getLocation().y);
 		c.setCurrentActionPoints(c.getCurrentActionPoints() - 1);
-		if(d.equals(Direction.LEFT) && tmp.x != 0) {
+		if(d.equals(Direction.LEFT) && tmp.x != 0 && board[tmp.x - 1][tmp.y] == null) {
 			c.setLocation(new Point(tmp.x - 1, tmp.y));
 			board[tmp.x][tmp.y] = null;
 		}
-		else if(d.equals(Direction.RIGHT) && tmp.x != BOARDWIDTH - 1) {
+		else if(d.equals(Direction.RIGHT) && tmp.x != BOARDWIDTH - 1 && board[tmp.x + 1][tmp.y] == null) {
 			c.setLocation(new Point(tmp.x + 1 , tmp.y));
 			board[tmp.x][tmp.y] = null;
 		}
-		else if(d.equals(Direction.UP) && tmp.y != BOARDHEIGHT - 1) {
+		else if(d.equals(Direction.UP) && tmp.y != BOARDHEIGHT - 1 && board[tmp.x][tmp.y + 1] == null) {
 			c.setLocation(new Point(tmp.x , tmp.y + 1));
 			board[tmp.x][tmp.y] = null;
 		}
-		else if(tmp.y != 0){
+		else if(tmp.y != 0 && board[tmp.x - 1][tmp.y - 1] == null){
 			c.setLocation(new Point(tmp.x , tmp.y - 1));
 			board[tmp.x][tmp.y] = null;
 		}
 	}
 	
 	public void attack(Direction d) {
+		
+	}
+	
+	public void castAbility(Ability a) {
+		Champion c = (Champion) getCurrentChampion();
+		// assuming the ability passed as parameter exists in the champion's ability array without checking
+		
+		
+	}
+	
+	public void castAbility(Ability a , Direction d) {
+		
+	}
+	
+	public void castAbility(Ability a , int x , int y) {
+		
+	}
+	
+	public void useLeaderAbility() {
+		
+	}
+	
+	public void endTurn() {
 		
 	}
 

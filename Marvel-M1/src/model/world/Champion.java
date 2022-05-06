@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import model.abilities.Ability;
 import model.effects.Effect;
 // made the class implement Damag. (Omar 3/5)
-public class Champion implements Damageable{
+public abstract class Champion implements Damageable , Comparable{
 	private String name;
 	private int maxHP;
 	private int currentHP;
@@ -140,6 +140,15 @@ public class Champion implements Damageable{
 	public void setMaxActionPointsPerTurn(int maxActionPointsPerTurn) {
 		this.maxActionPointsPerTurn = maxActionPointsPerTurn;
 	}
+	// (Youssef 5/5)
+	public int compareTo(Object o) {
+		Champion c=(Champion)o;
+		if(this.speed==c.speed)
+			return this.name.compareTo(c.name);
+		return this.speed-c.speed;
+	}
+	// (Youssef 5/5)
+	public abstract void useLeaderAbility(ArrayList<Champion> targets);
 
 	
 	
