@@ -26,6 +26,7 @@ import model.world.AntiHero;
 import model.world.Champion;
 import model.world.Condition;
 import model.world.Cover;
+//import model.world.Damageable;
 import model.world.Direction;
 import model.world.Hero;
 import model.world.Villain;
@@ -219,7 +220,7 @@ public class Game {
 	public void move(Direction d) {
 		Champion c = (Champion) turnOrder.peekMin();
 		if(c.getCurrentActionPoints() < 1)
-			return; // might have to throw some exception here not sure yet
+			return; // exception of not enough resources
 		Point tmp = new Point(c.getLocation().x , c.getLocation().y);
 		c.setCurrentActionPoints(c.getCurrentActionPoints() - 1);
 		if(d.equals(Direction.LEFT) && tmp.x != 0 && board[tmp.x - 1][tmp.y] == null) {
@@ -239,13 +240,149 @@ public class Game {
 			board[tmp.x][tmp.y] = null;
 		}
 	}
-	
+	//(Omar 7/5)
 	public void attack(Direction d) {
+		Champion c = (Champion) this.getCurrentChampion();
+		for(Effect e : c.getAppliedEffects()) { // exception of disarm
+			if(e instanceof Disarm)
+				return;
+		}
+		if(c.getCurrentActionPoints() < 2)
+			return; // exception of not enough resources
+		Point p = c.getLocation();
+		boolean first = firstPlayer.getTeam().contains(c); //  boolean to indicate the team of the current champion
+		boolean found = false; // boolean to indicate wether we found a valid targer or not while attacking
+		if(d.equals(Direction.RIGHT)) {
+			for(int i = p.x + 1; i < BOARDWIDTH && i < c.getAttackRange(); i++) {
+				if(board[p.y][i] != null) {
+					if(board[i][p.y] instanceof Cover) {
+						Cover tmp = (Cover) board[p.y][i];
+						coverAttack(c , tmp);
+						found = true;
+						break;
+					}
+					else {
+						Champion tmp = (Champion) board[p.y][i];
+						if(first && !(firstPlayer.getTeam().contains(tmp)) || !first && firstPlayer.getTeam().contains(tmp)) {
+							c2cAttack(c , tmp);
+							found = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		else if(d.equals(Direction.LEFT)) {
+			for(int i = p.x - 1 , j = 0; i > -1 && j < c.getAttackRange(); i-- , j++) {
+				if(board[p.y][i] != null) {
+					if(board[i][p.x] instanceof Cover) {
+						Cover tmp = (Cover) board[p.y][i];
+						coverAttack(c , tmp);
+						found = true;
+						break;
+					}
+					else {
+						Champion tmp = (Champion) board[p.y][i];
+						if(first && !(firstPlayer.getTeam().contains(tmp)) || !first && firstPlayer.getTeam().contains(tmp)) {
+							c2cAttack(c , tmp);
+							found = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		else if(d.equals(Direction.UP)) {
+			for(int i = p.y + 1; i < BOARDHEIGHT && i < c.getAttackRange(); i++) {
+				if(board[i][p.x] != null) {
+					if(board[i][p.x] instanceof Cover) {
+						Cover tmp = (Cover) board[i][p.x];
+						coverAttack(c , tmp);
+						found = true;
+						break;
+					}
+					else {
+						Champion tmp = (Champion) board[i][p.x];
+						if(first && !(firstPlayer.getTeam().contains(tmp)) || !first && firstPlayer.getTeam().contains(tmp)) {
+							c2cAttack(c , tmp);
+							found = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		else {
+			for(int i = p.y - 1 , j = 0; i > -1 && j < c.getAttackRange(); i-- , j++) {
+				if(board[i][p.x] != null) {
+					if(board[i][p.x] instanceof Cover) {
+						Cover tmp = (Cover) board[i][p.x];
+						coverAttack(c , tmp);
+						found = true;
+						break;
+					}
+					else {
+						Champion tmp = (Champion) board[i][p.x];
+						if(first && !(firstPlayer.getTeam().contains(tmp)) || !first && firstPlayer.getTeam().contains(tmp)) {
+							c2cAttack(c , tmp);
+							found = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+		if(!found) {
+			// should throw an invalid target exception here
+			c.setCurrentActionPoints(c.getCurrentActionPoints() - 2);
+		}
+	}
+	// carry out the attack on covers (helper for attack method) (Omar 7/5)
+	public void coverAttack(Champion c , Cover tmp) {
+		tmp.setCurrentHP(tmp.getCurrentHP() - c.getAttackDamage());
+		c.setCurrentActionPoints(c.getCurrentActionPoints() - 2);
+	}
+	// carry out the attack on champions (hepler)
+	public void c2cAttack(Champion c , Champion tmp) {
+		double dodge = 0.0;
+		for(Effect e : tmp.getAppliedEffects())
+			if(e instanceof Dodge)
+				dodge = Math.random();
 		
+		if(dodge < 0.5)
+			
+			if(special(c , tmp))
+				specialAttack(c , tmp);
+			else
+				normalAttack(c , tmp);
+	}
+
+	// determines wether the attack between champions is special or not (helper for attack method) (Omar 7/5)
+	public boolean special(Champion c , Champion tmp) {
+		return ((c instanceof Hero) && (tmp instanceof Villain))
+				|| ((tmp instanceof Hero) && (c instanceof Villain))
+				|| ((c instanceof AntiHero) && !(tmp instanceof AntiHero))
+				|| (!(c instanceof AntiHero) && (tmp instanceof AntiHero));
+	}
+	// carry out normal attacks between champions (helper for attack method)
+	public void normalAttack(Champion c , Champion tmp) {
+		tmp.setCurrentHP(tmp.getCurrentHP() - c.getAttackDamage());
+		c.setCurrentActionPoints(c.getCurrentActionPoints() - 2);
+		if(tmp.getCurrentHP() == 0) {
+			tmp.setCondition(Condition.KNOCKEDOUT);
+			// not sure wether we should remove the knockedout champions from the players' teams or not
+		}
+	}
+	// carry out special attacks between champions (helper for attack method) (Omar 7/5)
+	public void specialAttack(Champion c , Champion tmp) {
+		tmp.setCurrentHP( (int) (tmp.getCurrentHP() - c.getAttackDamage() * 1.5));
+		c.setCurrentActionPoints(c.getCurrentActionPoints() - 2);
+		if(tmp.getCurrentHP() == 0)
+			tmp.setCondition(Condition.KNOCKEDOUT);
 	}
 	
 	public void castAbility(Ability a) {
-		Champion c = (Champion) getCurrentChampion();
+		//Champion c = (Champion) getCurrentChampion();
 		// assuming the ability passed as parameter exists in the champion's ability array without checking
 		
 		
@@ -256,11 +393,53 @@ public class Game {
 	}
 	
 	public void castAbility(Ability a , int x , int y) {
+		Champion c = (Champion) this.getCurrentChampion();
+		if(a.getCastRange() < distance(c.getLocation() , new Point(x,y)) || c.getMana() < a.getManaCost())
+			return;
 		
 	}
 	
+	public int distance(Point p1 , Point p2) { // this method returns the manhattan distance (required by the MS)
+		return Math.abs(p1.x - p2.x) + Math.abs(p1.y - p2.y);
+	}
+	
 	public void useLeaderAbility() {
-		
+		Champion c = (Champion) this.getCurrentChampion();
+		boolean first = firstPlayer.getTeam().contains(c);
+		ArrayList<Champion> targets = new ArrayList<Champion>();
+		if(!c.equals(firstPlayer.getLeader()) || !c.equals(secondPlayer.getLeader()))
+			return; // leader not current exception should be thrown
+		if(c instanceof Hero) {
+			if(first) 
+				for(int i = 0; i < firstPlayer.getTeam().size(); i++) {
+					if(!firstPlayer.getTeam().get(i).equals(c))
+						targets.add(firstPlayer.getTeam().get(i));
+				}
+			
+			else {
+				for(int i = 0; i < secondPlayer.getTeam().size(); i++) {
+					if(!secondPlayer.getTeam().get(i).equals(c))
+						targets.add(secondPlayer.getTeam().get(i));
+				}
+			}
+		}
+		else if(c instanceof Villain) {
+			if(first)
+				for(int i = 0; i < secondPlayer.getTeam().size(); i++) 
+					targets.add(secondPlayer.getTeam().get(i));
+			else 
+				for(int i = 0; i < firstPlayer.getTeam().size(); i++)
+					targets.add(firstPlayer.getTeam().get(i));
+		}
+		else {
+			for(Champion x : firstPlayer.getTeam()) 
+				if(!x.equals(firstPlayer.getLeader()))
+					targets.add(x);
+			
+			for(Champion x : secondPlayer.getTeam()) 
+				if(!x.equals(secondPlayer.getLeader()))
+					targets.add(x);
+		}
 	}
 	
 	public void endTurn() {
