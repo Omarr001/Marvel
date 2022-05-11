@@ -231,7 +231,7 @@ public class Game {
 			throw new UnallowedMovementException();
 		Point tmp = new Point(c.getLocation().x , c.getLocation().y);
 		c.setCurrentActionPoints(c.getCurrentActionPoints() - 1);
-		if(d.equals(Direction.LEFT) && tmp.y != 0 && board[tmp.x][tmp.y - 1] == null) {
+		if(d.equals(Direction.LEFT)) {
 			c.setLocation(new Point(tmp.x, tmp.y - 1));
 			board[tmp.x][tmp.y] = null;
 		}
@@ -264,11 +264,15 @@ public class Game {
 		boolean first = firstPlayer.getTeam().contains(c); //  boolean to indicate the team of the current champion
 		boolean found = false; // boolean to indicate wether we found a valid targer or not while attacking
 		if(d.equals(Direction.RIGHT)) {
-			for(int i = p.y + 1; i < BOARDWIDTH && i < c.getAttackRange(); i++) {
+			for(int i = p.y + 1; i < BOARDWIDTH; i++) {
+				if(i > c.getAttackRange())
+					throw new InvalidTargetException();
 				if(board[p.x][i] != null) {
 					if(board[p.x][i] instanceof Cover) {
 						Cover tmp = (Cover) board[p.x][i];
 						coverAttack(c , tmp);
+						if(tmp.getCurrentHP() == 0)
+							board[p.x][i] = null;
 						found = true;
 						break;
 					}
@@ -284,11 +288,15 @@ public class Game {
 			}
 		}
 		else if(d.equals(Direction.LEFT)) {
-			for(int i = p.y - 1 , j = 0; i > -1 && j < c.getAttackRange(); i-- , j++) {
+			for(int i = p.y - 1 , j = 0; i > -1; i-- , j++) {
+				if(j > c.getAttackRange())
+					throw new InvalidTargetException();
 				if(board[p.x][i] != null) {
 					if(board[p.x][i] instanceof Cover) {
 						Cover tmp = (Cover) board[p.x][i];
 						coverAttack(c , tmp);
+						if(tmp.getCurrentHP() == 0)
+							board[p.x][i] = null;
 						found = true;
 						break;
 					}
@@ -304,11 +312,15 @@ public class Game {
 			}
 		}
 		else if(d.equals(Direction.UP)) {
-			for(int i = p.x + 1; i < BOARDHEIGHT && i < c.getAttackRange(); i++) {
+			for(int i = p.x + 1; i < BOARDHEIGHT; i++) {
+				if(i > c.getAttackRange())
+					throw new InvalidTargetException();
 				if(board[i][p.y] != null) {
 					if(board[i][p.y] instanceof Cover) {
 						Cover tmp = (Cover) board[i][p.y];
 						coverAttack(c , tmp);
+						if(tmp.getCurrentHP() == 0)
+							board[i][p.y] = null;
 						found = true;
 						break;
 					}
@@ -325,10 +337,14 @@ public class Game {
 		}
 		else {
 			for(int i = p.x - 1 , j = 0; i > -1 && j < c.getAttackRange(); i-- , j++) {
+				if(j > c.getAttackRange())
+					throw new InvalidTargetException();
 				if(board[i][p.y] != null) {
 					if(board[i][p.y] instanceof Cover) {
 						Cover tmp = (Cover) board[i][p.y];
 						coverAttack(c , tmp);
+						if(tmp.getCurrentHP() == 0)
+							board[i][p.y] = null;
 						found = true;
 						break;
 					}
@@ -473,6 +489,15 @@ public class Game {
 	}
 	
 	public void endTurn() {
+		Champion c = (Champion) turnOrder.remove();
+		for(Effect e : c.getAppliedEffects()) {
+			e.setDuration(e.getDuration() - 1);
+			if(e.getDuration() == 0 && !(e instanceof Shield))
+				e.remove(c);
+		}
+		Champion tmp = (Champion) turnOrder.peekMin();
+		if(tmp.getCondition().equals(Condition.INACTIVE))
+			turnOrder.remove();
 		
 	}
 
