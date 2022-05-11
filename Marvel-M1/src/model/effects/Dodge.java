@@ -10,14 +10,16 @@ public class Dodge extends Effect {
 	}
 
 	@Override
+	// (Fayrouz 7/5) rest of the implementation is handled in the engine in c2c helper
 	public void apply(Champion c) {
-		// TODO Auto-generated method stub
-		
+		c.setSpeed((int)(c.getSpeed()*1.05));
+		c.getAppliedEffects().add(this);
 	}
 
 	@Override
 	public void remove(Champion c) {
-		// TODO Auto-generated method stub
+		c.setSpeed((int) (c.getSpeed() * 0.95));
+		c.getAppliedEffects().remove(this);
 		
 	}
 

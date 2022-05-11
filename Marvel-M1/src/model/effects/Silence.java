@@ -8,16 +8,21 @@ public class Silence extends Effect {
 		super("Silence", duration, EffectType.DEBUFF);
 		
 	}
-
+	
+	// Fayrouz (7/5) rest of the implementation is handled in the engine
 	@Override
 	public void apply(Champion c) {
-		// TODO Auto-generated method stub
+		c.setMaxActionPointsPerTurn(c.getMaxActionPointsPerTurn() + 2);
+		c.setCurrentActionPoints(c.getCurrentActionPoints() + 2);
+		c.getAppliedEffects().add(this);
 		
 	}
 
 	@Override
 	public void remove(Champion c) {
-		// TODO Auto-generated method stub
+		c.setMaxActionPointsPerTurn(c.getMaxActionPointsPerTurn() - 2);
+		c.setCurrentActionPoints(c.getCurrentActionPoints() - 2);
+		c.getAppliedEffects().remove(this);
 		
 	}
 

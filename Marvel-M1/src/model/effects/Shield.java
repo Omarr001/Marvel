@@ -9,15 +9,18 @@ public class Shield extends Effect {
 		
 	}
 
+	// Team 11/5 rest of the implementation is handled in the engine
 	@Override
 	public void apply(Champion c) {
-		// TODO Auto-generated method stub
+		c.getAppliedEffects().add(this);
+		c.setSpeed((int) (c.getSpeed() * 1.02));
 		
 	}
 
 	@Override
 	public void remove(Champion c) {
-		// TODO Auto-generated method stub
+		c.getAppliedEffects().remove(this);
+		c.setSpeed((int) (c.getSpeed() * 0.98));
 		
 	}
 

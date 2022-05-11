@@ -16,6 +16,7 @@ public class PowerUp extends Effect {
 	}
 	// (Omar 4/5) not sure if this is the correct solution
 	public void apply(Champion c) {
+		c.getAppliedEffects().add(this);
 		ArrayList<Ability> tmp = c.getAbilities();
 		for(int i = 0; i < tmp.size(); i++) {
 			if(tmp.get(i) instanceof DamagingAbility) {
@@ -30,6 +31,7 @@ public class PowerUp extends Effect {
 	}
 	// (Omar 4/5) not sure if this is the correct solution
 	public void remove(Champion c) {
+		c.getAppliedEffects().remove(this);
 		ArrayList<Ability> tmp = c.getAbilities();
 		for(int i = 0; i < tmp.size(); i++) {
 			if(tmp.get(i) instanceof DamagingAbility) {
