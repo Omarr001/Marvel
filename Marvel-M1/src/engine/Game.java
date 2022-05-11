@@ -223,10 +223,12 @@ public class Game {
 		return null;
 	}
 	//(Omar 4/5) added exception Omar (11/5)
-	public void move(Direction d) throws UnallowedMovementException {
+	public void move(Direction d) throws UnallowedMovementException, NotEnoughResourcesException {
 		Champion c = (Champion) turnOrder.peekMin();
 		if(c.getCurrentActionPoints() < 1)
-			return; // exception of not enough resources
+			throw new NotEnoughResourcesException();
+		if(c.getCondition().equals(Condition.ROOTED))
+			throw new UnallowedMovementException();
 		Point tmp = new Point(c.getLocation().x , c.getLocation().y);
 		c.setCurrentActionPoints(c.getCurrentActionPoints() - 1);
 		if(d.equals(Direction.LEFT) && tmp.y != 0 && board[tmp.x][tmp.y - 1] == null) {

@@ -145,7 +145,7 @@ public abstract class Champion implements Damageable , Comparable{
 		Champion c=(Champion)o;
 		if(this.speed==c.speed)
 			return this.name.compareTo(c.name);
-		return this.speed-c.speed;
+		return c.speed-this.speed;
 	}
 	// (Youssef 5/5)
 	public abstract void useLeaderAbility(ArrayList<Champion> targets);
