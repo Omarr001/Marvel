@@ -21,6 +21,7 @@ import model.abilities.HealingAbility;
 import model.effects.Disarm;
 import model.effects.Dodge;
 import model.effects.Effect;
+import model.effects.EffectType;
 import model.effects.Embrace;
 import model.effects.PowerUp;
 import model.effects.Root;
@@ -595,8 +596,173 @@ public class Game {
 		
 	}
 	
-	public void castAbility(Ability a , Direction d) {
+	public void castAbility(Ability a , Direction d) throws AbilityUseException,
+	NotEnoughResourcesException, CloneNotSupportedException {
+		Champion c=(Champion)this.getCurrentChampion();
+		ArrayList<Damageable> targets=new ArrayList<Damageable>();
+		Point p=c.getLocation();
+		boolean first=firstPlayer.getTeam().contains(c);
+		if(!a.getCastArea().equals(AreaOfEffect.DIRECTIONAL))
+			throw new AbilityUseException();
+		if(c.getMana()<a.getManaCost())
+			throw new NotEnoughResourcesException();
+		if(a instanceof HealingAbility) {
+			if(d.equals(Direction.RIGHT)) {
+				for(int i=p.y+1;i<this.getBoardwidth();i++) {
+					if(i>a.getCastRange())
+						throw new AbilityUseException();
+					healingHelper(p.x, i, targets, first);
+					
+				}
+			}
+			else if(d.equals(Direction.LEFT)) {
+				for(int i=p.y-1,j=0;i<0;i--,j++) {
+					if(j>a.getCastRange())
+						throw new AbilityUseException();
+					healingHelper(p.x, i, targets, first);
+					
+				}
+			}
+			else if(d.equals(Direction.UP)) {
+				for(int i=p.x+1;i<this.getBoardheight();i++) {
+					if(i>a.getCastRange())
+						throw new AbilityUseException();
+					healingHelper(i, p.y, targets, first);
+					
+				}
+				
+			}
+			else {
+				for(int i=p.x-1,j=0;i<0;i++,j++) {
+					if(j>a.getCastRange())
+						throw new AbilityUseException();
+					healingHelper(i, p.y, targets, first);
+					
+				}
+				
+			}
+				a.execute(targets);
+			}
+		else if(a instanceof DamagingAbility ) {
+			if(d.equals(Direction.RIGHT)) {
+				for(int i=p.y+1;i<this.getBoardwidth();i++) {
+					if(i>a.getCastRange())
+						throw new AbilityUseException();
+					damagingHelper(p.x,i,targets,first);
+				}
+			}
+				else if(d.equals(Direction.LEFT)) {
+					for(int i=p.y-1,j=0;i<0;i--,j++) {
+						if(j>a.getCastRange())
+							throw new AbilityUseException();
+						damagingHelper(p.x,i,targets,first);
+					}
+					
+				}
+				else if(d.equals(Direction.UP)) {
+					for(int i=p.x+1;i<this.getBoardheight();i++) {
+						if(i>a.getCastRange())
+							throw new AbilityUseException();
+						damagingHelper(i,p.y,targets,first);
+					}
+					
+				}
+				else {
+					for(int i=p.x-1,j=0;i<0;i++,j++) {
+						if(j>a.getCastRange())
+							throw new AbilityUseException();
+						damagingHelper(i,p.y,targets,first);
+					}
+				}
+			a.execute(targets);
+		}
+		else {
+			Effect e=(Effect) ((CrowdControlAbility) a).getEffect().clone();
+				if(d.equals(Direction.RIGHT)) {
+					for(int i=p.y+1;i<this.getBoardwidth();i++) {
+						if(i>a.getCastRange())
+							throw new AbilityUseException();
+						crowdControlHelper(p.x, i, targets, first, e);
+					}
+				
+			} else if(d.equals(Direction.LEFT)) {
+				for(int i=p.y-1,j=0;i<0;i--,j++) {
+					if(j>a.getCastRange())
+						throw new AbilityUseException();
+					crowdControlHelper(p.x,i,targets,first,e);
+				}
+			}
+			else if(d.equals(Direction.UP)) {
+				for(int i=p.x+1;i<this.getBoardheight();i++) {
+					if(i>a.getCastRange())
+						throw new AbilityUseException();
+					crowdControlHelper(i,p.y,targets,first,e);
+				}
+				
+			}
+			else {
+				for(int i=p.x-1,j=0;i<0;i++,j++) {
+					if(j>a.getCastRange())
+						throw new AbilityUseException();
+					crowdControlHelper(i,p.y,targets,first,e);
+				}
+			}
+				a.execute(targets);
+		}
+			
 		
+	
+	}
+	
+	public void healingHelper(int x,int y,ArrayList<Damageable> targets,boolean first) {
+		if(board[x][y]!=null) {
+			if(board[x][y] instanceof Champion) {
+				Champion tmp=(Champion)board[x][y];
+				if(first && firstPlayer.getTeam().contains(tmp))
+					targets.add(tmp);
+				else if(!first && secondPlayer.getTeam().contains(tmp))
+					targets.add(tmp);
+				
+			}
+		}
+	}
+	
+	public void damagingHelper(int x,int y,ArrayList<Damageable> targets,boolean first) {
+		if(board[x][y]!=null) {
+			if(board[x][y] instanceof Cover) {
+				Cover tmp=(Cover)board[x][y];
+				targets.add(tmp);
+			}
+			else {
+				Champion tmp=(Champion)board[x][y];
+				if(first && secondPlayer.getTeam().contains(tmp))
+					targets.add(tmp);
+				else if(!first && firstPlayer.getTeam().contains(tmp))
+					targets.add(tmp);
+			}
+		}
+		
+	}
+	
+	public void crowdControlHelper(int x,int y,ArrayList<Damageable>targets,boolean first,Effect e) {
+		if(board[x][y]!=null) {
+			if(board[x][y] instanceof Champion) {
+				Champion tmp=(Champion)board[x][y];
+				if(e.getType().equals(EffectType.BUFF)) {
+					if(first && firstPlayer.getTeam().contains(tmp))
+						targets.add(tmp);
+					else if(!first && secondPlayer.getTeam().contains(tmp))
+						targets.add(tmp);
+				}
+				else {
+					if(!first && firstPlayer.getTeam().contains(tmp))
+						targets.add(tmp);
+					else if(first && secondPlayer.getTeam().contains(tmp))
+						targets.add(tmp);
+				}
+			}
+			
+		}
 	}
 	
 	public void castAbility(Ability a , int x , int y) throws NotEnoughResourcesException, 
