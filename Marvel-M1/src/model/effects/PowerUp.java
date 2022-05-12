@@ -36,11 +36,11 @@ public class PowerUp extends Effect {
 		for(int i = 0; i < tmp.size(); i++) {
 			if(tmp.get(i) instanceof DamagingAbility) {
 				DamagingAbility d = (DamagingAbility) tmp.get(i);
-				d.setDamageAmount((int) (d.getDamageAmount() * 0.8));
+				d.setDamageAmount((int) (d.getDamageAmount() / 1.2));
 			}
 			else if(tmp.get(i) instanceof HealingAbility) {
 				HealingAbility h = (HealingAbility) tmp.get(i);
-				h.setHealAmount((int) (h.getHealAmount() * 0.8));
+				h.setHealAmount((int) (h.getHealAmount() / 1.2));
 			}
 		}
 	}

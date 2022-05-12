@@ -33,13 +33,13 @@ public  class HealingAbility extends Ability {
 	    		newHp=currentHp+this.healAmount;
 	    		c.setCurrentHP(newHp);
 	    		}
-	    	else{
-	    			Cover v = (Cover)s;
-	    			currentHp=v.getCurrentHP();
-		    		newHp=currentHp+this.healAmount;
-		    		v.setCurrentHP(newHp);
-	    			
-	    		}
+//	    	else{
+//	    			Cover v = (Cover)s;
+//	    			currentHp=v.getCurrentHP();
+//		    		newHp=currentHp+this.healAmount;
+//		    		v.setCurrentHP(newHp);
+//	    			
+//	    		}
 	    		
 	    	}
 	    }

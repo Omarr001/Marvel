@@ -20,7 +20,7 @@ public class Shield extends Effect {
 	@Override
 	public void remove(Champion c) {
 		c.getAppliedEffects().remove(this);
-		c.setSpeed((int) (c.getSpeed() * 0.98));
+		c.setSpeed((int) (c.getSpeed() / 1.02));
 		
 	}
 

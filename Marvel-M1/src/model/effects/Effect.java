@@ -32,5 +32,9 @@ public abstract class Effect implements Cloneable{
 	
 	public abstract void remove(Champion c);
 	
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+	
 
 }

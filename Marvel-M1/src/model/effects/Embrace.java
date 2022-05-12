@@ -22,8 +22,8 @@ public class Embrace extends Effect {
 	@Override
 	public void remove(Champion c) {
 		c.getAppliedEffects().remove(this);
-		c.setSpeed((int)(c.getSpeed()*0.8));
-		c.setAttackDamage((int)(c.getAttackDamage()*0.8));
+		c.setSpeed((int)(c.getSpeed()/1.2));
+		c.setAttackDamage((int)(c.getAttackDamage()/1.2));
 		
 	}
 
