@@ -435,13 +435,16 @@ public class Game {
 		}
 	}
 	// assuming the ability passed as parameter exists in the champion's ability array without checking
-	public void castAbility(Ability a) throws NotEnoughResourcesException {
+	public void castAbility(Ability a) throws NotEnoughResourcesException, AbilityUseException
+	, CloneNotSupportedException {
 		Champion c = (Champion) getCurrentChampion();
 		Point p1 = c.getLocation();
 		//silence
 		boolean first = firstPlayer.getTeam().contains(c);
 		ArrayList<Damageable> targets = new ArrayList<Damageable>();
-		if (c.getMana()<a.getManaCost())
+		if (a.getCurrentCooldown()>0)
+			throw new AbilityUseException();
+		if (c.getMana()<a.getManaCost()||c.getCurrentActionPoints()<a.getRequiredActionPoints())
 			throw new NotEnoughResourcesException();
 		if (a instanceof HealingAbility ){
 			HealingAbility h = (HealingAbility)a;
@@ -479,7 +482,7 @@ public class Game {
 			}
 			else if (h.getCastArea().equals(AreaOfEffect.SURROUND)){
 				if (first){
-					ArrayList<Champion> T= firstPlayer.getTeam();
+					//ArrayList<Champion> T= firstPlayer.getTeam();
 					for (int i = 0 ; i <firstPlayer.getTeam().size(); i++){
 						Champion temp = firstPlayer.getTeam().get(i);
 						Point pt = temp.getLocation();
@@ -499,7 +502,7 @@ public class Game {
 					h.execute(targets);
 				}
 				else{
-					ArrayList<Champion> T= secondPlayer.getTeam();
+					//ArrayList<Champion> T= secondPlayer.getTeam();
 					for (int i = 0 ; i <secondPlayer.getTeam().size(); i++){
 						Champion temp = secondPlayer.getTeam().get(i);
 						Point pt = temp.getLocation();
@@ -550,7 +553,7 @@ public class Game {
 			}
 			else if (d.getCastArea().equals(AreaOfEffect.SURROUND)){
 				if (!first){
-					ArrayList<Champion> T= firstPlayer.getTeam();
+					
 					for (int i = 0 ; i <firstPlayer.getTeam().size(); i++){
 						Champion temp = firstPlayer.getTeam().get(i);
 						Point pt = temp.getLocation();
@@ -569,7 +572,7 @@ public class Game {
 					d.execute(targets);
 				}
 				else{
-					ArrayList<Champion> T= secondPlayer.getTeam();
+					//ArrayList<Champion> T= secondPlayer.getTeam();
 					for (int i = 0 ; i <secondPlayer.getTeam().size(); i++){
 						Champion temp = secondPlayer.getTeam().get(i);
 						Point pt = temp.getLocation();
@@ -591,9 +594,117 @@ public class Game {
 			
 			
 		}
-		
-		
-		
+		else if (a instanceof CrowdControlAbility ){
+			CrowdControlAbility cc = (CrowdControlAbility)a;
+			EffectType et= cc.getEffect().getType();
+			if (cc.getCastArea().equals(AreaOfEffect.TEAMTARGET)){
+				if(et.equals(EffectType.BUFF)){ //treat it as healing ability
+					if (first){
+						for(int i = 0 ; i<firstPlayer.getTeam().size();i++){
+								Point p2 = firstPlayer.getTeam().get(i).getLocation();
+								int distance = distance(p1,p2);
+								if (distance<=a.getCastRange())
+									targets.add(firstPlayer.getTeam().get(i));
+								
+							}
+					
+						cc.execute(targets);
+					}
+					
+					else{
+						for(int i = 0 ; i<secondPlayer.getTeam().size();i++){
+								Point p2 = secondPlayer.getTeam().get(i).getLocation();
+								int distance = distance(p1,p2);
+								if (distance<=a.getCastRange())
+									targets.add(secondPlayer.getTeam().get(i));
+								
+							}
+						
+						cc.execute(targets);	
+					}
+
+				}
+				if (et.equals(EffectType.DEBUFF)){ //treat it as damaging ability
+					if (first){
+						for(int i = 0 ; i<secondPlayer.getTeam().size();i++){
+							//if (!secondPlayer.getTeam().get(i).getName().equals(c.getName())){
+								Point p2 = secondPlayer.getTeam().get(i).getLocation();
+								int distance = distance(p1,p2);
+								if (distance<=a.getCastRange())
+									targets.add(secondPlayer.getTeam().get(i));
+								
+							}
+						cc.execute(targets);	
+					}
+					else{
+						for(int i = 0 ; i<firstPlayer.getTeam().size();i++){
+					
+						//if (!firstPlayer.getTeam().get(i).getName().equals(c.getName())){
+						Point p2 = firstPlayer.getTeam().get(i).getLocation();
+						int distance = distance(p1,p2);
+						if (distance<=a.getCastRange())
+							targets.add(firstPlayer.getTeam().get(i));
+						
+					}
+				
+						cc.execute(targets);
+					}
+					
+				}
+			}
+			else if(cc.getCastArea().equals(AreaOfEffect.SELFTARGET)){
+				if (et.equals(EffectType.BUFF))
+					targets.add(c);
+				cc.execute(targets);
+
+			}
+			else if (cc.getCastArea().equals(AreaOfEffect.SURROUND)){
+				if (et.equals(EffectType.BUFF)){ //healing
+					if (first){
+						for (int i = 0 ; i <firstPlayer.getTeam().size(); i++){
+							Champion temp = firstPlayer.getTeam().get(i);
+							Point pt = temp.getLocation();
+							
+								if (pt.y==p1.y&&(pt.x==p1.x+1
+										||pt.x==p1.x-1)
+										||pt.x==p1.x&&(pt.y==p1.y-1
+										||pt.y==p1.y+1)
+										||pt.x==p1.x+1&&(pt.y==p1.y-1
+										||pt.y==p1.y+1)||pt.x==p1.x-1&&(pt.y==p1.y-1||pt.y==p1.y+1))
+									targets.add(temp);
+								
+							
+							
+						}
+						cc.execute(targets);
+					}
+					
+					else{ //damaging 
+						for (int i = 0 ; i <secondPlayer.getTeam().size(); i++){
+							Champion temp = secondPlayer.getTeam().get(i);
+							Point pt = temp.getLocation();
+							
+								if (pt.y==p1.y&&(pt.x==p1.x+1
+										||pt.x==p1.x-1)
+										||pt.x==p1.x&&(pt.y==p1.y-1
+										||pt.y==p1.y+1)
+										||pt.x==p1.x+1&&(pt.y==p1.y-1
+										||pt.y==p1.y+1)||pt.x==p1.x-1&&(pt.y==p1.y-1||pt.y==p1.y+1))
+									targets.add(temp);
+								
+							
+							
+						}
+						cc.execute(targets);
+					}
+				
+				}
+			
+			}
+		}
+			a.setCurrentCooldown(a.getBaseCooldown());
+			c.setCurrentActionPoints(c.getCurrentActionPoints()-a.getRequiredActionPoints());
+			c.setMana(c.getMana()-a.getManaCost());
 	}
 	
 	public void castAbility(Ability a , Direction d) throws AbilityUseException,
@@ -601,14 +712,26 @@ public class Game {
 		Champion c=(Champion)this.getCurrentChampion();
 		ArrayList<Damageable> targets=new ArrayList<Damageable>();
 		Point p=c.getLocation();
+		int x = c.getCurrentActionPoints()-a.getRequiredActionPoints();
 		boolean first=firstPlayer.getTeam().contains(c);
+		if (a.getCurrentCooldown()>0)
+			throw new AbilityUseException();
+		if(c.getCurrentActionPoints()<a.getRequiredActionPoints() || c.getMana()<a.getManaCost())
+			throw new NotEnoughResourcesException();
+		for(Effect e:c.getAppliedEffects()) { //not sure 
+			if(e.getName().equals("Silence"))
+				throw new AbilityUseException();
+		}
+		c.setCurrentActionPoints(x);
+		c.setMana(c.getMana()-a.getManaCost());
+		a.setCurrentCooldown(a.getBaseCooldown());
 		if(!a.getCastArea().equals(AreaOfEffect.DIRECTIONAL))
 			throw new AbilityUseException();
-		if(c.getMana()<a.getManaCost())
+		if(c.getMana()<a.getManaCost()||x<0)
 			throw new NotEnoughResourcesException();
 		if(a instanceof HealingAbility) {
 			if(d.equals(Direction.RIGHT)) {
-				for(int i=p.y+1;i<this.getBoardwidth();i++) {
+				for(int i=p.y+1;i<BOARDHEIGHT;i++) {
 					if(i>a.getCastRange())
 						throw new AbilityUseException();
 					healingHelper(p.x, i, targets, first);
@@ -624,7 +747,7 @@ public class Game {
 				}
 			}
 			else if(d.equals(Direction.UP)) {
-				for(int i=p.x+1;i<this.getBoardheight();i++) {
+				for(int i=p.x+1;i<BOARDHEIGHT;i++) {
 					if(i>a.getCastRange())
 						throw new AbilityUseException();
 					healingHelper(i, p.y, targets, first);
@@ -645,7 +768,7 @@ public class Game {
 			}
 		else if(a instanceof DamagingAbility ) {
 			if(d.equals(Direction.RIGHT)) {
-				for(int i=p.y+1;i<this.getBoardwidth();i++) {
+				for(int i=p.y+1;i<BOARDWIDTH;i++) {
 					if(i>a.getCastRange())
 						throw new AbilityUseException();
 					damagingHelper(p.x,i,targets,first);
@@ -660,7 +783,7 @@ public class Game {
 					
 				}
 				else if(d.equals(Direction.UP)) {
-					for(int i=p.x+1;i<this.getBoardheight();i++) {
+					for(int i=p.x+1;i<BOARDHEIGHT;i++) {
 						if(i>a.getCastRange())
 							throw new AbilityUseException();
 						damagingHelper(i,p.y,targets,first);
@@ -679,7 +802,7 @@ public class Game {
 		else {
 			Effect e=(Effect) ((CrowdControlAbility) a).getEffect().clone();
 				if(d.equals(Direction.RIGHT)) {
-					for(int i=p.y+1;i<this.getBoardwidth();i++) {
+					for(int i=p.y+1;i<BOARDWIDTH;i++) {
 						if(i>a.getCastRange())
 							throw new AbilityUseException();
 						crowdControlHelper(p.x, i, targets, first, e);
@@ -693,7 +816,7 @@ public class Game {
 				}
 			}
 			else if(d.equals(Direction.UP)) {
-				for(int i=p.x+1;i<this.getBoardheight();i++) {
+				for(int i=p.x+1;i<BOARDHEIGHT;i++) {
 					if(i>a.getCastRange())
 						throw new AbilityUseException();
 					crowdControlHelper(i,p.y,targets,first,e);
@@ -766,7 +889,7 @@ public class Game {
 	}
 	
 	public void castAbility(Ability a , int x , int y) throws NotEnoughResourcesException, 
-	InvalidTargetException, AbilityUseException {
+	InvalidTargetException, AbilityUseException, CloneNotSupportedException {
 		Champion c = (Champion) this.getCurrentChampion();
 		boolean first = firstPlayer.getTeam().contains(c);
 		for(Effect tmp : c.getAppliedEffects()) 
