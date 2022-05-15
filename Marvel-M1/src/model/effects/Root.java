@@ -13,14 +13,14 @@ public class Root extends Effect {
 	public void apply(Champion c) {
 		// INACTIVE has a precedence over ROOTED so if champion is INACTIVE, Root won't affect it
 		// This condition assuming if the champion is knocked out there is no way an effect is applied on it
-		c.getAppliedEffects().add(this);
+		//c.getAppliedEffects().add(this);
 		if(!(c.getCondition().equals(Condition.INACTIVE))) 
 			c.setCondition(Condition.ROOTED);
 	}
 	// (Omar 4/5) not sure if this is the correct solution
 	public void remove(Champion c) {
 		int i = 0;
-		c.getAppliedEffects().remove(this);
+		//c.getAppliedEffects().remove(this);
 		for(Effect e : c.getAppliedEffects()) {
 			if(e.getName().equals("Root")) {
 				i++;

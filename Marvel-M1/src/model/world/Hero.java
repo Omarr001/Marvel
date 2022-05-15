@@ -2,6 +2,7 @@ package model.world;
 
 import java.util.ArrayList;
 
+import model.effects.Effect;
 import model.effects.EffectType;
 import model.effects.Embrace;
 
@@ -13,16 +14,21 @@ public class Hero extends Champion {
 	}
 	// (Youssef 5/5)
 	public void useLeaderAbility(ArrayList<Champion> targets) {
+		ArrayList<Integer> index = new ArrayList<Integer>();
+		
 		for(int i=0;i<targets.size();i++) {
-			for(int j=0;j<targets.get(i).getAppliedEffects().size();j++) {
+			for(int j = 0; j < targets.get(i).getAppliedEffects().size(); j++) {
 				if(targets.get(i).getAppliedEffects().get(j).getType().equals(EffectType.DEBUFF)) {
-					targets.get(i).getAppliedEffects().get(j).remove(targets.get(i));
-					targets.get(i).getAppliedEffects().remove(j);
+					index.add(j);
 				}
-				
+			}
+			for(int k = 0; k < index.size(); k++) {
+				targets.get(i).getAppliedEffects().remove((int) index.get(k));
 			}
 			// added to apply an embrace for each target (Omar)
-			targets.get(i).getAppliedEffects().add(new Embrace(2));
+			Effect e = new Embrace(2);
+			e.apply(targets.get(i));
+			targets.get(i).getAppliedEffects().add(e);
 		}
 		
 		

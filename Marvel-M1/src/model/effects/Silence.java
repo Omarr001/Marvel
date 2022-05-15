@@ -14,7 +14,7 @@ public class Silence extends Effect {
 	public void apply(Champion c) {
 		c.setMaxActionPointsPerTurn(c.getMaxActionPointsPerTurn() + 2);
 		c.setCurrentActionPoints(c.getCurrentActionPoints() + 2);
-		c.getAppliedEffects().add(this);
+		//c.getAppliedEffects().add(this);
 		
 	}
 
@@ -22,7 +22,7 @@ public class Silence extends Effect {
 	public void remove(Champion c) {
 		c.setMaxActionPointsPerTurn(c.getMaxActionPointsPerTurn() - 2);
 		c.setCurrentActionPoints(c.getCurrentActionPoints() - 2);
-		c.getAppliedEffects().remove(this);
+		//c.getAppliedEffects().remove(this);
 		
 	}
 
