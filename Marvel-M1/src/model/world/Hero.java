@@ -14,17 +14,18 @@ public class Hero extends Champion {
 	}
 	// (Youssef 5/5)
 	public void useLeaderAbility(ArrayList<Champion> targets) {
-		ArrayList<Integer> index = new ArrayList<Integer>();
+		//ArrayList<Integer> index = new ArrayList<Integer>();
 		
 		for(int i=0;i<targets.size();i++) {
-			for(int j = 0; j < targets.get(i).getAppliedEffects().size(); j++) {
-				if(targets.get(i).getAppliedEffects().get(j).getType().equals(EffectType.DEBUFF)) {
-					index.add(j);
+			ArrayList<Effect> tmp = targets.get(i).getAppliedEffects();
+			for(int j = 0; j < tmp.size(); j++) {
+				Effect e = tmp.get(j);
+				if(e.getType().equals(EffectType.DEBUFF)) {
+					e.remove(targets.get(i));
+					tmp.remove(e);
 				}
 			}
-			for(int k = 0; k < index.size(); k++) {
-				targets.get(i).getAppliedEffects().remove((int) index.get(k));
-			}
+			
 			// added to apply an embrace for each target (Omar)
 			Effect e = new Embrace(2);
 			e.apply(targets.get(i));

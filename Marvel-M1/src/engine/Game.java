@@ -221,8 +221,9 @@ public class Game {
 	public Player checkGameOver() {
 		if(firstPlayer.getTeam().size() == 0)
 			return secondPlayer;
-		else if(secondPlayer.getTeam().size() == 0)
+		else if(secondPlayer.getTeam().size() == 0){
 			return firstPlayer;
+		}
 		return null;
 	}
 	//(Omar 4/5) added exception Omar (11/5)
@@ -287,9 +288,9 @@ public class Game {
 		boolean first = firstPlayer.getTeam().contains(c); //  boolean to indicate the team of the current champion
 		boolean found = false; // boolean to indicate wether we found a valid targer or not while attacking
 		if(d.equals(Direction.RIGHT)) {
-			for(int i = p.y + 1; i < BOARDWIDTH; i++) {
+			for(int i = p.y + 1, j = 0; i < BOARDWIDTH && j < c.getAttackRange(); i++, j++) 
 				
-				if(board[p.x][i] != null) {
+				if(board[p.x][i] != null) 
 					if(board[p.x][i] instanceof Cover) {
 						Cover tmp = (Cover) board[p.x][i];
 						coverAttack(c , tmp);
@@ -300,19 +301,20 @@ public class Game {
 					}
 					else {
 						Champion tmp = (Champion) board[p.x][i];
-						if(first && !(firstPlayer.getTeam().contains(tmp)) || !first && firstPlayer.getTeam().contains(tmp)) {
+						if(first && !(firstPlayer.getTeam().contains(tmp)) || 
+								!first && firstPlayer.getTeam().contains(tmp)) {
 							c2cAttack(c , tmp);
 							found = true;
 							break;
 						}
 					}
-				}
-			}
+				
+			
 		}
 		else if(d.equals(Direction.LEFT)) {
-			for(int i = p.y - 1; i > -1; i--) {
+			for(int i = p.y - 1, j = 0; i > -1 && j < c.getAttackRange(); i--, j++) 
 				
-				if(board[p.x][i] != null) {
+				if(board[p.x][i] != null) 
 					if(board[p.x][i] instanceof Cover) {
 						Cover tmp = (Cover) board[p.x][i];
 						coverAttack(c , tmp);
@@ -323,19 +325,20 @@ public class Game {
 					}
 					else {
 						Champion tmp = (Champion) board[p.x][i];
-						if(first && !(firstPlayer.getTeam().contains(tmp)) || !first && firstPlayer.getTeam().contains(tmp)) {
+						if(first && !(firstPlayer.getTeam().contains(tmp)) || 
+								!first && firstPlayer.getTeam().contains(tmp)) {
 							c2cAttack(c , tmp);
 							found = true;
 							break;
 						}
 					}
-				}
-			}
+				
+			
 		}
 		else if(d.equals(Direction.UP)) {
-			for(int i = p.x + 1; i < BOARDHEIGHT; i++) {
+			for(int i = p.x + 1, j = 0; i < BOARDHEIGHT && j < c.getAttackRange(); i++, j++) 
 				
-				if(board[i][p.y] != null) {
+				if(board[i][p.y] != null) 
 					if(board[i][p.y] instanceof Cover) {
 						Cover tmp = (Cover) board[i][p.y];
 						coverAttack(c , tmp);
@@ -346,19 +349,20 @@ public class Game {
 					}
 					else {
 						Champion tmp = (Champion) board[i][p.y];
-						if(first && !(firstPlayer.getTeam().contains(tmp)) || !first && firstPlayer.getTeam().contains(tmp)) {
+						if(first && !(firstPlayer.getTeam().contains(tmp)) || 
+								!first && firstPlayer.getTeam().contains(tmp)) {
 							c2cAttack(c , tmp);
 							found = true;
 							break;
 						}
 					}
-				}
-			}
+				
+			
 		}
 		else {
-			for(int i = p.x - 1; i > -1; i--) {
+			for(int i = p.x - 1, j = 0; i > -1 && j < c.getAttackRange(); i--, j++) 
 				
-				if(board[i][p.y] != null) {
+				if(board[i][p.y] != null) 
 					if(board[i][p.y] instanceof Cover) {
 						Cover tmp = (Cover) board[i][p.y];
 						coverAttack(c , tmp);
@@ -369,14 +373,15 @@ public class Game {
 					}
 					else {
 						Champion tmp = (Champion) board[i][p.y];
-						if(first && !(firstPlayer.getTeam().contains(tmp)) || !first && firstPlayer.getTeam().contains(tmp)) {
+						if(first && !(firstPlayer.getTeam().contains(tmp)) ||
+								!first && firstPlayer.getTeam().contains(tmp)) {
 							c2cAttack(c , tmp);
 							found = true;
 							break;
 						}
 					}
-				}
-			}
+				
+			
 		}
 		
 			c.setCurrentActionPoints(c.getCurrentActionPoints() - 2);
@@ -402,12 +407,15 @@ public class Game {
 			}
 				
 		}
-		if(dodge < 0.5)
-			
+		if(dodge < 0.5) {
 			if(special(c , tmp))
 				specialAttack(c , tmp);
 			else
 				normalAttack(c , tmp);
+		}
+		else {
+			c.setCurrentActionPoints(c.getCurrentActionPoints() - 2);
+		}
 	}
 
 	// determines wether the attack between champions is special or not (helper for attack method) (Omar 7/5)
@@ -424,6 +432,10 @@ public class Game {
 		if(tmp.getCurrentHP() == 0) {
 			board[tmp.getLocation().x][tmp.getLocation().y] = null;
 			tmp.setCondition(Condition.KNOCKEDOUT);
+//			if(firstPlayer.getTeam().contains(tmp))
+//				firstPlayer.getTeam().remove(tmp);
+//			else
+//				secondPlayer.getTeam().remove(tmp);
 			// not sure wether we should remove the knockedout champions from the players' teams or not
 		}
 	}
@@ -434,6 +446,10 @@ public class Game {
 		if(tmp.getCurrentHP() == 0) {
 			board[tmp.getLocation().x][tmp.getLocation().y] = null;
 			tmp.setCondition(Condition.KNOCKEDOUT);
+//			if(firstPlayer.getTeam().contains(tmp))
+//				firstPlayer.getTeam().remove(tmp);
+//			else
+//				secondPlayer.getTeam().remove(tmp);
 			
 		}
 	}
@@ -1134,10 +1150,10 @@ public class Game {
 	}
 	
 	public void endTurn() {
-//		if(turnOrder.isEmpty()) {
-//			prepareChampionTurns();
-//			return;
-//		}
+		if(turnOrder.isEmpty()) {
+			this.prepareChampionTurns();
+			return;
+		}
 		Champion c = (Champion) turnOrder.remove();
 		for(Effect e : c.getAppliedEffects()) {
 			e.setDuration(e.getDuration() - 1);
@@ -1163,6 +1179,11 @@ public class Game {
 				for(Ability a : tmp.getAbilities()) {
 					a.setCurrentCooldown(a.getCurrentCooldown() - 1);
 					
+				}
+				turnOrder.remove();
+				if(turnOrder.isEmpty()) {
+					this.prepareChampionTurns();
+					return;
 				}
 			}
 				
